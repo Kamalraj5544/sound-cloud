@@ -1,26 +1,56 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 
-import SongList from '../playlist.json'
+import "../styles/Cards.css";
+
+import SongList from "../playlist.json";
 
 const Cards = () => {
-    const [list, setList] = useState([...SongList])
+  const [list, setList] = useState([]);
+
+  useEffect(() => {
+    setList([...SongList]);
+  }, []);
+
+  const handleDelete = (id) => {
+    const confirm = prompt(
+      "Are you sure you want to delete ... If yes Type 'yes' to delete"
+    );
+
+    if (confirm === "yes") {
+      const tempCards = list.filter((item) => item.id !== id);
+      setList([...tempCards]);
+    }
+  };
+
   return (
-    <div>
+    <div className="card-container">
       <Row xs={1} md={4} className="g-4">
-        {list.map((item, idx) => (
+        {list.map((item) => (
           <Col>
+            <div className="delete-icon">
+              <Button className="dlt-btn"
+                variant="danger"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleDelete(item.id);
+                }}
+              >
+                X
+              </Button>
+            </div>
             <Card>
-              <Card.Img variant="top" src={item.user.avatar_url} />
+              <Card.Img
+                className="card-img"
+                variant="top"
+                src={item.artworkUrl}
+              />
               <Card.Body>
-                <Card.Title>{item.title}</Card.Title>
-                <Card.Text>
-                  This is a longer card with supporting text below as a natural
-                  lead-in to additional content. This content is a little bit
-                  longer.
-                </Card.Text>
+                <Card.Title>{item.user.username}</Card.Title>
+                <Card.Text>{item.label_name}</Card.Text>
               </Card.Body>
             </Card>
           </Col>
@@ -30,4 +60,4 @@ const Cards = () => {
   );
 };
 
-export default Cards
+export default Cards;
